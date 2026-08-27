@@ -1,7 +1,7 @@
-# LieShouCloud-auth-services · 开源后端服务:auth
+# lieshou-cloud-auth-services · 开源后端服务:auth
 
-> 自 LieShouCloud-core/services/auth 拆分(2026-08 细粒度)。
-> 组合:services/common → LieShouCloud-common + services/jwt-support → LieShouCloud-jwt-support。
+> 自 lieshou-cloud-core/services/auth 拆分(2026-08 细粒度)。
+> 组合:services/common → lieshou-cloud-common + services/jwt-support → lieshou-cloud-jwt-support。
 
 ```bash
 cd services

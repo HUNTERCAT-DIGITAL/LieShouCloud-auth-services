@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>lieshoucloud-auth</artifactId>
-    <name>LieShouCloud · Auth Service</name>
+    <name>lieshou-cloud · Auth Service</name>
     <description>鉴权服务（JWT 签发 + 验证 · Phase 5 · 闭环鉴权）</description>
 
     <dependencies>
@@ -103,7 +103,7 @@
             <artifactId>framework-common</artifactId>
         </dependency>
 
-        <!-- 认证业务核心（LieShou-framework · 上游同源） -->
+        <!-- 认证业务核心（lieshou-framework · 上游同源） -->
         <dependency>
             <groupId>cn.huntercat</groupId>
             <artifactId>framework-auth</artifactId>
