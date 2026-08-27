@@ -22,6 +22,7 @@ import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.RefreshRequest;
 import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.RegisterRequest;
 import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.ResetPasswordRequest;
 import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.SendCodeRequest;
+import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.SwitchTenantRequest;
 import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.TokenResponse;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -63,6 +64,17 @@ public class AuthController {
   @RateLimiter(name = "authLogin")
   public TokenResponse login(@Valid @RequestBody LoginRequest req) {
     return authService.login(req);
+  }
+
+  @Operation(
+      summary = "Switch tenant (after login)",
+      description = "用 refresh token 切换登录租户（先登录后选租户）；目标租户账号需存在且 ACTIVE。")
+  @ApiResponse(responseCode = "200", description = "New tokens bound to target tenant")
+  @ApiResponse(responseCode = "401", description = "INVALID_REFRESH_TOKEN / ACCOUNT_*")
+  @ApiResponse(responseCode = "404", description = "USER_NOT_FOUND")
+  @PostMapping("/switch-tenant")
+  public TokenResponse switchTenant(@Valid @RequestBody SwitchTenantRequest req) {
+    return authService.switchTenant(req.refreshToken(), req.tenantCode());
   }
 
   @Operation(

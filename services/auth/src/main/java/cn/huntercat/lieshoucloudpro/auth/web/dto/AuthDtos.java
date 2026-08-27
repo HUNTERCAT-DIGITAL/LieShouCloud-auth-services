@@ -24,6 +24,11 @@ public final class AuthDtos {
   public record RefreshRequest(
       @Schema(description = "Refresh token from /login response") @NotBlank String refreshToken) {}
 
+  /** 切换租户请求（先登录后选租户） */
+  public record SwitchTenantRequest(
+      @NotBlank @Schema(description = "已认证的 refresh token") String refreshToken,
+      @NotBlank @Schema(description = "目标租户编码") String tenantCode) {}
+
   @Schema(description = "Token response (Phase 5: access + refresh + meta)")
   public record TokenResponse(
       @Schema(description = "JWT access token (Bearer)") String accessToken,
@@ -38,7 +43,11 @@ public final class AuthDtos {
               description =
                   "Tenant edition: GENERIC | LAYER | LEGALMIND | ZHIYE | JMZZ (ADR-0035/0036)",
               example = "GENERIC")
-          String tenantEdition) {}
+          String tenantEdition,
+      @Schema(
+              description = "该用户名可登录的合法租户列表（账号存在且 ACTIVE；登录后切换租户用）",
+              example = "[{tenantCode: huntercat, tenantName: 南昌猎手猫}]")
+          java.util.List<java.util.Map<String, Object>> availableTenants) {}
 
   @Schema(description = "Error response body")
   public record ErrorResponse(

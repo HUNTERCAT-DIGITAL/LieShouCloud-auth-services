@@ -102,7 +102,8 @@ public class AuthService {
         user.username(),
         tenantCode,
         user.tenantName(),
-        user.tenantEdition());
+        user.tenantEdition(),
+        tenantOptions(req.username()));
   }
 
   /** 登录成功回写 last_login_at（失败静默，不影响登录主流程）. */
@@ -190,7 +191,8 @@ public class AuthService {
         req.username(),
         tcode,
         tname,
-        tedition);
+        tedition,
+        tenantOptions(req.username()));
   }
 
   /** 忘记密码：校验 code → 按 phone/email 查用户 → 改密 */
@@ -268,7 +270,57 @@ public class AuthService {
         user.username(),
         tcode,
         user.tenantName(),
-        user.tenantEdition());
+        user.tenantEdition(),
+        tenantOptions(user.username()));
+  }
+
+  /**
+   * 切换租户（先登录后选租户 · 2026-08）：用已认证的 refresh token 换目标租户新 token。
+   *
+   * <p>校验目标租户该用户名账号存在且 ACTIVE（"合法租户"），签发该租户的 access + refresh。
+   *
+   * @throws BadCredentialsException refresh token 无效 / 目标租户账号不可用
+   * @throws UsernameNotFoundException 目标租户无该账号
+   */
+  public TokenResponse switchTenant(String refreshToken, String tenantCode) {
+    if (!jwt.validate(refreshToken)) {
+      throw new BadCredentialsException("INVALID_REFRESH_TOKEN");
+    }
+    Claims c = jwt.parse(refreshToken);
+    if (!"refresh".equals(c.get("typ"))) {
+      throw new BadCredentialsException("WRONG_TOKEN_TYPE");
+    }
+    String username = c.getSubject();
+    String tcode = (tenantCode == null || tenantCode.isBlank()) ? DEFAULT_TENANT_CODE : tenantCode;
+    UserAuthView user;
+    try {
+      user = userClient.findByTenantAndUsername(tcode, username);
+    } catch (Exception e) {
+      throw new UsernameNotFoundException("USER_NOT_FOUND: " + username);
+    }
+    if (user == null || user.id() == null) {
+      throw new UsernameNotFoundException("USER_NOT_FOUND: " + username);
+    }
+    String status = user.status() == null ? "ACTIVE" : user.status();
+    if (!"ACTIVE".equals(status)) {
+      throw new BadCredentialsException("ACCOUNT_" + status);
+    }
+    List<String> roles =
+        user.roles() == null || user.roles().isEmpty() ? List.of("USER") : user.roles();
+    String access = jwt.generateAccessToken(user.id(), user.tenantId(), tcode, username, roles);
+    String newRefresh = jwt.generateRefreshToken(user.id(), username);
+    markLastLogin(user.id());
+    return new TokenResponse(
+        access,
+        newRefresh,
+        jwt.getAccessTtlSeconds(),
+        "Bearer",
+        user.id(),
+        username,
+        tcode,
+        user.tenantName(),
+        user.tenantEdition(),
+        tenantOptions(username));
   }
 
   /**
@@ -304,7 +356,8 @@ public class AuthService {
         username,
         tenantCode,
         null,
-        null);
+        null,
+        tenantOptions(username));
   }
 
   /** 给 AuthController.me 用：从已验证的 JWT Claims 提取用户信息. */
