@@ -108,11 +108,6 @@
             <groupId>cn.huntercat</groupId>
             <artifactId>framework-auth</artifactId>
         </dependency>
-        <!-- JWT 共享模块（HS256 单一事实源 · Bottom-Up） -->
-        <dependency>
-            <groupId>cn.huntercat</groupId>
-            <artifactId>lieshoucloud-jwt-support</artifactId>
-        </dependency>
 
         <!-- Test -->
         <dependency>

@@ -1,23 +1,23 @@
 package cn.huntercat.lieshoucloudpro.auth.feign;
 
-import java.util.Map;
-
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.cloud.openfeign.FeignClient;
 
 import cn.huntercat.lieshou.framework.auth.UserAuthPort;
 import cn.huntercat.lieshou.framework.auth.dto.UserAuthView;
+import java.util.Map;
 
 /**
  * auth-service 调 user-service 拉 user 视图（含 passwordHash）.
  *
- * <p><b>薄壳装配</b>：业务契约在 {@link UserAuthPort}（LieShou-framework，上游同源唯一）；
- * 本接口仅补 Feign 的 HTTP 映射注解 + {@code @FeignClient}。
+ * <p><b>薄壳装配</b>：业务契约在 {@link UserAuthPort}（LieShou-framework，上游同源唯一）； 本接口仅补 Feign 的 HTTP 映射注解 +
+ * {@code @FeignClient}。
  */
 @FeignClient(name = "lieshoucloud-user", path = "/api/users")
 public interface UserAuthClient extends UserAuthPort {
