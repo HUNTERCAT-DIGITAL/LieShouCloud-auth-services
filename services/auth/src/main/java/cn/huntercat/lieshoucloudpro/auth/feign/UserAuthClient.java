@@ -1,69 +1,61 @@
 package cn.huntercat.lieshoucloudpro.auth.feign;
 
+import java.util.Map;
+
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import org.springframework.cloud.openfeign.FeignClient;
-
-import cn.huntercat.lieshoucloudpro.auth.feign.dto.UserAuthView;
-import java.util.Map;
+import cn.huntercat.lieshou.framework.auth.UserAuthPort;
+import cn.huntercat.lieshou.framework.auth.dto.UserAuthView;
 
 /**
  * auth-service 调 user-service 拉 user 视图（含 passwordHash）.
  *
- * <p>Spring Cloud OpenFeign 自动从 Nacos 发现 user-service; 若 Nacos 未起, 可用 fallback 替身.
+ * <p><b>薄壳装配</b>：业务契约在 {@link UserAuthPort}（LieShou-framework，上游同源唯一）；
+ * 本接口仅补 Feign 的 HTTP 映射注解 + {@code @FeignClient}。
  */
 @FeignClient(name = "lieshoucloud-user", path = "/api/users")
-public interface UserAuthClient {
+public interface UserAuthClient extends UserAuthPort {
 
-  /**
-   * 按租户 + username 查询（Phase 8 · ADR-0022）. user-service 暴露 {@code
-   * /api/users/auth/by-tenant/{code}/{username}}.
-   */
+  @Override
   @GetMapping("/auth/by-tenant/{tenantCode}/{username}")
   UserAuthView findByTenantAndUsername(
       @PathVariable String tenantCode, @PathVariable String username);
 
-  /**
-   * 跨租户查该 username 可登录的租户选项（登录页多租户选择）. user-service 暴露 {@code
-   * /api/users/auth/tenant-options?username=}。
-   */
+  @Override
   @GetMapping("/auth/tenant-options")
   java.util.List<java.util.Map<String, Object>> tenantOptions(@RequestParam String username);
 
-  /** Phase 6: 登录成功后回写 last_login_at（失败由调用方吞掉，不影响登录主流程）. */
+  @Override
   @PostMapping("/{id}/login-marker")
   void markLastLogin(@PathVariable Long id);
 
-  // ============================================================
-  // Phase 8 · 认证体系扩展（ADR-0023）
-  // ============================================================
-
-  /** 发送验证码 */
+  @Override
   @PostMapping("/verification/send")
   void sendVerificationCode(@RequestBody Map<String, String> body);
 
-  /** 校验验证码（一次性，校验后作废） */
+  @Override
   @PostMapping("/verification/verify")
   void verifyVerificationCode(@RequestBody Map<String, String> body);
 
-  /** 按手机号查鉴权视图 */
+  @Override
   @GetMapping("/auth/by-phone/{phone}")
   UserAuthView findByPhone(@PathVariable String phone);
 
-  /** 按邮箱查鉴权视图 */
+  @Override
   @GetMapping("/auth/by-email/{email}")
   UserAuthView findByEmail(@PathVariable String email);
 
-  /** 创建用户（注册用；body 对齐 user-service CreateUserRequest） */
+  @Override
   @PostMapping("")
   Map<String, Object> createUser(@RequestBody Map<String, String> body);
 
-  /** 重置密码（body: {password}，对齐 user-service UpdateUserRequest 部分字段） */
+  @Override
   @PutMapping("/{id}")
   void updateUserPassword(@PathVariable Long id, @RequestBody Map<String, String> body);
 }

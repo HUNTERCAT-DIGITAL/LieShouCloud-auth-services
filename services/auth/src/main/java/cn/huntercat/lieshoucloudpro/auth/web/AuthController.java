@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
-import cn.huntercat.lieshoucloudpro.auth.service.AuthService;
-import cn.huntercat.lieshoucloudpro.auth.service.JwtService;
-import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.LoginRequest;
-import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.LoginWithCodeRequest;
-import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.RefreshRequest;
-import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.RegisterRequest;
-import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.ResetPasswordRequest;
-import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.SendCodeRequest;
-import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.SwitchTenantRequest;
-import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.TokenResponse;
+import cn.huntercat.lieshou.framework.auth.AuthService;
+import cn.huntercat.lieshou.framework.auth.JwtService;
+import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.LoginRequest;
+import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.LoginWithCodeRequest;
+import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.RefreshRequest;
+import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.RegisterRequest;
+import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.ResetPasswordRequest;
+import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.SendCodeRequest;
+import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.SwitchTenantRequest;
+import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.TokenResponse;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.jsonwebtoken.Claims;
