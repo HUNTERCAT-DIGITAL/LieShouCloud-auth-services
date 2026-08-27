@@ -65,6 +65,22 @@ public class AuthController {
     return authService.login(req);
   }
 
+  @Operation(
+      summary = "Tenant options for username (login page)",
+      description = "同用户名多租户时，登录前按 username 查询可登录的租户列表（公开，不校验密码）。")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Tenant options [{tenantId, tenantCode, tenantName, tenantEdition}]")
+  @PostMapping("/tenant-options")
+  public ResponseEntity<?> tenantOptions(@RequestBody(required = false) Map<String, String> body) {
+    String username = body == null ? null : body.get("username");
+    if (username == null || username.isBlank()) {
+      return ResponseEntity.badRequest()
+          .body(Map.of("error", "BAD_REQUEST", "message", "缺少 username"));
+    }
+    return ResponseEntity.ok(authService.tenantOptions(username.trim()));
+  }
+
   // ============================================================
   // Phase 8 · 认证体系扩展（ADR-0023）
   // ============================================================

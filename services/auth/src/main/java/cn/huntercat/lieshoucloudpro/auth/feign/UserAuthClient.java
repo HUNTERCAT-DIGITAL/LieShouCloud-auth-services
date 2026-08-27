@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springframework.cloud.openfeign.FeignClient;
 
@@ -26,6 +27,13 @@ public interface UserAuthClient {
   @GetMapping("/auth/by-tenant/{tenantCode}/{username}")
   UserAuthView findByTenantAndUsername(
       @PathVariable String tenantCode, @PathVariable String username);
+
+  /**
+   * 跨租户查该 username 可登录的租户选项（登录页多租户选择）. user-service 暴露 {@code
+   * /api/users/auth/tenant-options?username=}。
+   */
+  @GetMapping("/auth/tenant-options")
+  java.util.List<java.util.Map<String, Object>> tenantOptions(@RequestParam String username);
 
   /** Phase 6: 登录成功后回写 last_login_at（失败由调用方吞掉，不影响登录主流程）. */
   @PostMapping("/{id}/login-marker")

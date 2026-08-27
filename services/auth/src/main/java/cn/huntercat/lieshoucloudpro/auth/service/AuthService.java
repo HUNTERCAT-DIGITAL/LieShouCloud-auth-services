@@ -39,6 +39,16 @@ public class AuthService {
     this.passwordEncoder = passwordEncoder;
   }
 
+  /** 登录页租户选项（同用户名多租户时供选择；不校验密码，仅返回租户 code/name/edition）。 */
+  public java.util.List<java.util.Map<String, Object>> tenantOptions(String username) {
+    try {
+      return userClient.tenantOptions(username);
+    } catch (Exception e) {
+      // 服务不可达/查询失败 → 空列表，前端回退默认租户登录
+      return java.util.List.of();
+    }
+  }
+
   /**
    * 登录: tenantCode + username + password → access + refresh tokens.
    *
