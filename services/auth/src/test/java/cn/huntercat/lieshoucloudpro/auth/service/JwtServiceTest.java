@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import cn.huntercat.lieshou.framework.auth.JwtService;
 import io.jsonwebtoken.Claims;
 import java.util.List;
 
@@ -19,7 +20,7 @@ class JwtServiceTest {
   void setUp() {
     jwt =
         new JwtService(
-            new cn.huntercat.lieshoucloudpro.jwt.JwtSupport(
+            new cn.huntercat.lieshou.framework.jwt.JwtSupport(
                 "test-secret-must-be-at-least-32-bytes-long-1234", "test"),
             1800L,
             604800L);
@@ -60,7 +61,7 @@ class JwtServiceTest {
   @Test
   void shortSecret_failsAtInit() {
     try {
-      new cn.huntercat.lieshoucloudpro.jwt.JwtSupport("too-short", "test");
+      new cn.huntercat.lieshou.framework.jwt.JwtSupport("too-short", "test");
       org.junit.jupiter.api.Assertions.fail("Should have thrown IllegalStateException");
     } catch (IllegalStateException e) {
       assertTrue(e.getMessage().contains("JWT_SECRET"));

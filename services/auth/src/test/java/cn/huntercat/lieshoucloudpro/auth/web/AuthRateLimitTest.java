@@ -16,8 +16,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import cn.huntercat.lieshoucloudpro.auth.service.AuthService;
-import cn.huntercat.lieshoucloudpro.auth.web.dto.AuthDtos.TokenResponse;
+import cn.huntercat.lieshou.framework.auth.AuthService;
+import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.TokenResponse;
 
 /**
  * Resilience4j RateLimiter 限流测试（P1-4 · ADR-0028）.

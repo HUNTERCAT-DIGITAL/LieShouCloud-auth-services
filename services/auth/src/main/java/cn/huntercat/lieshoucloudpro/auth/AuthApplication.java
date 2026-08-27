@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
  *
  * @see .ai/decisions/0017-spring-security-jwt.md
  */
-@SpringBootApplication(scanBasePackages = "cn.huntercat.lieshoucloudpro")
+@SpringBootApplication(scanBasePackages = {"cn.huntercat.lieshoucloudpro", "cn.huntercat.lieshou.framework"})
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = "cn.huntercat.lieshoucloudpro.auth.feign")
 @OpenAPIDefinition(
