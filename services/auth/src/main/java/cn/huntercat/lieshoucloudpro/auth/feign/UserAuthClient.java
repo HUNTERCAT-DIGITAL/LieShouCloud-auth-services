@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.cloud.openfeign.FeignClient;
 
 import cn.huntercat.lieshou.framework.auth.UserAuthPort;
-import cn.huntercat.lieshou.framework.auth.dto.UserAuthView;
+import cn.huntercat.lieshou.framework.common.dto.UserAuthView;
 import java.util.Map;
 
 /**
