@@ -61,6 +61,12 @@ app:
     issuer: ${JWT_ISSUER:lieshoucloud-prod}
 
 # ============================================================
+# 默认租户编码（未传 tenantCode 时）· framework AuthService 可配置（framework 0.1.1+）
+# ============================================================
+auth:
+  default-tenant-code: ${AUTH_DEFAULT_TENANT_CODE:huntercat}
+
+# ============================================================
 # SpringDoc OpenAPI
 #   - /v3/api-docs/auth
 #   - /swagger-ui/auth/index.html (经 gateway)
