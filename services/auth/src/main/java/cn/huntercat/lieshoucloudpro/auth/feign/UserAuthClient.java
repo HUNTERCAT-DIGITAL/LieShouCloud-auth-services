@@ -19,7 +19,10 @@ import java.util.Map;
  * <p><b>薄壳装配</b>：业务契约在 {@link UserAuthPort}（LieShou-framework，上游同源唯一）； 本接口仅补 Feign 的 HTTP 映射注解 +
  * {@code @FeignClient}。
  */
-@FeignClient(name = "lieshoucloud-user", path = "/api/users")
+@FeignClient(
+    name = "lieshoucloud-user",
+    path = "/api/users",
+    configuration = UserAuthErrorDecoder.class)
 public interface UserAuthClient extends UserAuthPort {
 
   @Override
