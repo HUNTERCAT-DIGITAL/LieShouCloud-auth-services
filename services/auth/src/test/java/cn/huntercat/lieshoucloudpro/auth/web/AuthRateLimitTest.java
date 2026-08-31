@@ -48,6 +48,7 @@ class AuthRateLimitTest {
           "huntercat",
           null,
           "GENERIC",
+          false,
           java.util.List.of());
 
   @Autowired private MockMvc mockMvc;

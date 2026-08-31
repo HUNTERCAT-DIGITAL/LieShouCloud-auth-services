@@ -21,6 +21,7 @@ import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.LoginWithCodeRequest;
 import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.RefreshRequest;
 import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.RegisterRequest;
 import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.ResetPasswordRequest;
+import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.ActivateRequest;
 import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.SendCodeRequest;
 import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.SwitchTenantRequest;
 import cn.huntercat.lieshou.framework.auth.dto.AuthDtos.TokenResponse;
@@ -145,6 +146,19 @@ public class AuthController {
   public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest req) {
     authService.resetPassword(req);
     return ResponseEntity.noContent().build();
+  }
+
+  @Operation(
+      summary = "首次登录激活(管理员建用户未设密码,验证码激活并设置密码 · 2026-08)",
+      description = "校验 ACTIVATE 验证码 → 设置密码 → 激活即登录(tokens)")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Activated + tokens returned"),
+    @ApiResponse(responseCode = "401", description = "INVALID_CODE / USER_NOT_FOUND")
+  })
+  @PostMapping("/activate")
+  @RateLimiter(name = "authCodeFlow")
+  public TokenResponse activate(@Valid @RequestBody ActivateRequest req) {
+    return authService.activate(req);
   }
 
   @Operation(summary = "Exchange refresh token for new access token")
