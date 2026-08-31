@@ -47,8 +47,9 @@ public interface UserAuthClient extends UserAuthPort {
   void verifyVerificationCode(@RequestBody Map<String, String> body);
 
   @Override
-  @GetMapping("/auth/by-phone/{phone}")
-  UserAuthView findByPhone(@PathVariable String phone);
+  @GetMapping("/auth/by-tenant-phone/{tenantCode}/{phone}")
+  UserAuthView findByTenantAndPhone(
+      @PathVariable String tenantCode, @PathVariable String phone);
 
   @Override
   @GetMapping("/auth/by-email/{email}")
