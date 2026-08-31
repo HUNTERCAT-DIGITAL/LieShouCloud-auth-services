@@ -149,16 +149,30 @@ public class AuthController {
   }
 
   @Operation(
-      summary = "首次登录激活(管理员建用户未设密码,验证码激活并设置密码 · 2026-08)",
-      description = "校验 ACTIVATE 验证码 → 设置密码 → 激活即登录(tokens)")
+      summary = "首次登录激活(管理员建用户未设密码 · 2026-08)",
+      description = "登录后(token 即身份)直接设置密码,无需再次验证码")
+  @SecurityRequirement(name = "bearerAuth")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Activated + tokens returned"),
-    @ApiResponse(responseCode = "401", description = "INVALID_CODE / USER_NOT_FOUND")
+    @ApiResponse(responseCode = "401", description = "MISSING_BEARER_TOKEN / INVALID_TOKEN")
   })
   @PostMapping("/activate")
   @RateLimiter(name = "authCodeFlow")
-  public TokenResponse activate(@Valid @RequestBody ActivateRequest req) {
-    return authService.activate(req);
+  public TokenResponse activate(
+      @org.springframework.web.bind.annotation.RequestHeader(
+              value = "Authorization",
+              required = false)
+          String authorization,
+      @Valid @RequestBody ActivateRequest req) {
+    if (authorization == null || !authorization.startsWith("Bearer ")) {
+      throw new BadCredentialsException("MISSING_BEARER_TOKEN");
+    }
+    String token = authorization.substring(7);
+    if (!jwtService.validate(token)) {
+      throw new BadCredentialsException("INVALID_TOKEN");
+    }
+    Claims c = jwtService.parse(token);
+    return authService.activate(c, req);
   }
 
   @Operation(summary = "Exchange refresh token for new access token")
